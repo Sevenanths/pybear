@@ -40,13 +40,3 @@ class Bear:
 			self.rect.y -= BEAR_SPEED
 		elif self.direction == BearDirection.DOWN:
 			self.rect.y += BEAR_SPEED
-
-def generate_random_coordinate(axis):
-	if axis == "x":
-		return random.randrange(OBJECT_WIDTH + 1,
-								WIDTH - (2 * OBJECT_WIDTH))
-	elif axis == "y":
-		return random.randrange(OBJECT_HEIGHT + 1,
-								HEIGHT - (2 * OBJECT_HEIGHT))
-	else:
-		return False
