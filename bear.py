@@ -74,7 +74,7 @@ def draw_title(show_text):
 
 	pygame.display.update()
 
-def draw_game_over(score):
+def draw_game_over(show_text, score):
 	WIN.blit(BG, (0, 0))
 
 	WIN.blit(SPR_GAME_OVER, (WIDTH // 2 - (SPR_GAME_OVER.get_width() // 2),
@@ -83,7 +83,13 @@ def draw_game_over(score):
 	final_score_text = FNT_TITLE.render(f"Score: {score}", 1, WHITE)
 	WIN.blit(final_score_text,
 			 (WIDTH // 2 - final_score_text.get_width() / 2,
-			 400))
+			 12))
+
+	if show_text:
+		press_start_text = FNT_TITLE.render("Press ENTER to restart", 1, WHITE)
+		WIN.blit(press_start_text,
+				 (WIDTH // 2 - press_start_text.get_width() / 2,
+				 400))
 
 	pygame.display.update()
 
@@ -118,7 +124,7 @@ def main():
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						game_mode = GameModes.GAME
-						pygame.time.set_timer(EV_HIDE_TEXT, 0)
+						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
 				elif event.type == pygame.QUIT:
 					run = False
 
@@ -126,14 +132,16 @@ def main():
 	
 			continue
 		elif game_mode == GameModes.GAME_OVER:
-			draw_game_over(score)
-
 			for event in pygame.event.get():
-				if event.type == pygame.KEYDOWN:
+				if event.type == EV_HIDE_TEXT:
+					show_text = not show_text
+				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						game_mode = GameModes.GAME
 				elif event.type == pygame.QUIT:
 					run = False
+
+			draw_game_over(show_text, score)
 	
 		elif game_mode == GameModes.GAME:
 			for event in pygame.event.get():
