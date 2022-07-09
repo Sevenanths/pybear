@@ -56,11 +56,13 @@ class Fire(BearObject):
 # -- Assets --
 SPR_BEAR = pygame.image.load(os.path.join('assets', 'bear.png'))
 SPR_WALL = pygame.image.load(os.path.join('assets', 'wall.png'))
+SPR_FIRE = pygame.image.load(os.path.join('assets', 'fire.png'))
+SPR_STAR = pygame.image.load(os.path.join('assets', 'star.png'))
 
 BG = pygame.image.load(os.path.join('assets', 'bg_scaled.png'))
 
 # -- Functions --
-def draw_window(obj_bear):
+def draw_window(obj_bear, objects):
 	WIN.blit(BG, (0, 0))
 
 	walls = []
@@ -77,6 +79,10 @@ def draw_window(obj_bear):
 		WIN.blit(SPR_WALL, (WIDTH - OBJECT_WIDTH, y * OBJECT_HEIGHT))
 
 	WIN.blit(SPR_BEAR, (obj_bear.x, obj_bear.y))
+
+	for obj_object in objects:
+		spr_object = SPR_FIRE if obj_object.type == "fire" else SPR_STAR
+		WIN.blit(spr_object, (obj_object.rect.x, obj_object.rect.y))
 
 	pygame.display.update()
 
@@ -161,7 +167,7 @@ def main():
 				bear_direction = Direction.RIGHT
 
 		move_bear(bear_direction, obj_bear)
-		draw_window(obj_bear)
+		draw_window(obj_bear, objects)
 
 	pygame.quit()
 
