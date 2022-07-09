@@ -28,14 +28,14 @@ EV_BEAR_RIGHT = pygame.USEREVENT + 4
 
 FPS = 75
 
-class Direction:
+class BearDirection:
 	UP = 1
 	DOWN = 2
 	LEFT = 3
 	RIGHT = 4
 
-ALL_DIRECTIONS = [ Direction.UP, Direction.DOWN,
-				   Direction.LEFT, Direction.RIGHT ]
+ALL_DIRECTIONS = [ BearDirection.UP, BearDirection.DOWN,
+				   BearDirection.LEFT, BearDirection.RIGHT ]
 
 class BearObject:
 	def __init__(self, object_type):
@@ -98,25 +98,25 @@ def handle_bear_movement(key_event, obj_bear):
 
 def move_bear(bear_direction, obj_bear):
 	if obj_bear.x - BEAR_SPEED <= OBJECT_WIDTH:
-		bear_direction = Direction.RIGHT
+		bear_direction = BearDirection.RIGHT
 		pygame.event.post(pygame.event.Event(EV_BEAR_RIGHT))
 	elif obj_bear.x + BEAR_SPEED >= WIDTH - (OBJECT_WIDTH * 2):
-		bear_direction = Direction.LEFT
+		bear_direction = BearDirection.LEFT
 		pygame.event.post(pygame.event.Event(EV_BEAR_LEFT))
 	elif obj_bear.y - BEAR_SPEED <= OBJECT_HEIGHT:
-		bear_direction = Direction.DOWN
+		bear_direction = BearDirection.DOWN
 		pygame.event.post(pygame.event.Event(EV_BEAR_DOWN))
 	elif obj_bear.y + BEAR_SPEED >= HEIGHT - (OBJECT_HEIGHT * 2):
-		bear_direction = Direction.UP
+		bear_direction = BearDirection.UP
 		pygame.event.post(pygame.event.Event(EV_BEAR_UP))
 
-	if bear_direction == Direction.LEFT:
+	if bear_direction == BearDirection.LEFT:
 		obj_bear.x -= BEAR_SPEED
-	elif bear_direction == Direction.RIGHT:
+	elif bear_direction == BearDirection.RIGHT:
 		obj_bear.x += BEAR_SPEED
-	elif bear_direction == Direction.UP:
+	elif bear_direction == BearDirection.UP:
 		obj_bear.y -= BEAR_SPEED
-	elif bear_direction == Direction.DOWN:
+	elif bear_direction == BearDirection.DOWN:
 		obj_bear.y += BEAR_SPEED
 
 def generate_random_coordinate(axis):
@@ -158,13 +158,13 @@ def main():
 				handle_bear_movement(event.key, obj_bear)
 
 			if event.type == EV_BEAR_UP:
-				bear_direction = Direction.UP
+				bear_direction = BearDirection.UP
 			elif event.type == EV_BEAR_DOWN:
-				bear_direction = Direction.DOWN
+				bear_direction = BearDirection.DOWN
 			elif event.type == EV_BEAR_LEFT:
-				bear_direction = Direction.LEFT
+				bear_direction = BearDirection.LEFT
 			elif event.type == EV_BEAR_RIGHT:
-				bear_direction = Direction.RIGHT
+				bear_direction = BearDirection.RIGHT
 
 		move_bear(bear_direction, obj_bear)
 		draw_window(obj_bear, objects)
