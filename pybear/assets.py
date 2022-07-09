@@ -14,3 +14,5 @@ BG = pygame.image.load(os.path.join('assets', 'bg_scaled.png'))
 
 SPR_TITLE = pygame.image.load(os.path.join('assets', 'title.png'))
 SPR_GAME_OVER = pygame.image.load(os.path.join('assets', 'game_over.png'))
+
+SND_BG = pygame.mixer.Sound(os.path.join('assets', 'bg.ogg'))

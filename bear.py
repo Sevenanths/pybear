@@ -124,6 +124,7 @@ def main():
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						game_mode = GameModes.GAME
+						SND_BG.play(-1)
 						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
 				elif event.type == pygame.QUIT:
 					run = False
@@ -140,6 +141,7 @@ def main():
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						game_mode = GameModes.GAME
+						SND_BG.stop()
 				elif event.type == pygame.QUIT:
 					run = False
 					pygame.quit()
