@@ -18,6 +18,7 @@ OBJECT_WIDTH = 32
 OBJECT_HEIGHT = 32
 
 BEAR_SPEED = 4
+OBJECT_SPEED = 2
 
 NUM_OBJECTS = 2
 
@@ -37,13 +38,60 @@ class BearDirection:
 ALL_DIRECTIONS = [ BearDirection.UP, BearDirection.DOWN,
 				   BearDirection.LEFT, BearDirection.RIGHT ]
 
+class ObjectDirection:
+	UP_LEFT = 1
+	UP_RIGHT = 2
+	DOWN_LEFT = 3
+	DOWN_RIGHT = 4
+
+ALL_OBJECT_DIRECTIONS = [ ObjectDirection.UP_LEFT, ObjectDirection.UP_RIGHT,
+						  ObjectDirection.DOWN_LEFT, ObjectDirection.DOWN_RIGHT ]
+
 class BearObject:
 	def __init__(self, object_type):
 		self.type = object_type
-		self.direction = random.choice(ALL_DIRECTIONS)
+		self.direction = random.choice(ALL_OBJECT_DIRECTIONS)
 		self.rect = pygame.Rect(generate_random_coordinate("x"),
 								generate_random_coordinate("y"),
 								OBJECT_WIDTH, OBJECT_HEIGHT)
+
+	def move(self):
+		# Left wall collision
+		if self.rect.x - OBJECT_SPEED <= OBJECT_WIDTH:
+			if self.direction == ObjectDirection.UP_LEFT:
+				self.direction = ObjectDirection.UP_RIGHT
+			elif self.direction == ObjectDirection.DOWN_LEFT:
+				self.direction = ObjectDirection.DOWN_RIGHT
+		# Right wall collision
+		elif self.rect.x + OBJECT_SPEED >= WIDTH - (OBJECT_WIDTH * 2):
+			if self.direction == ObjectDirection.UP_RIGHT:
+				self.direction = ObjectDirection.UP_LEFT
+			elif self.direction == ObjectDirection.DOWN_RIGHT:
+				self.direction = ObjectDirection.DOWN_LEFT
+		# Top wall collision
+		elif self.rect.y - OBJECT_SPEED <= OBJECT_HEIGHT:
+			if self.direction == ObjectDirection.UP_LEFT:
+				self.direction = ObjectDirection.DOWN_LEFT
+			elif self.direction == ObjectDirection.UP_RIGHT:
+				self.direction = ObjectDirection.DOWN_RIGHT
+		elif self.rect.y + OBJECT_SPEED >= HEIGHT - (OBJECT_HEIGHT * 2):
+			if self.direction == ObjectDirection.DOWN_LEFT:
+				self.direction = ObjectDirection.UP_LEFT
+			elif self.direction == ObjectDirection.DOWN_RIGHT:
+				self.direction = ObjectDirection.UP_RIGHT
+	
+		if self.direction == ObjectDirection.UP_LEFT:
+			self.rect.x -= OBJECT_SPEED
+			self.rect.y -= OBJECT_SPEED
+		elif self.direction == ObjectDirection.UP_RIGHT:
+			self.rect.x += OBJECT_SPEED
+			self.rect.y -= OBJECT_SPEED
+		elif self.direction == ObjectDirection.DOWN_LEFT:
+			self.rect.x -= OBJECT_SPEED
+			self.rect.y += OBJECT_SPEED
+		elif self.direction == ObjectDirection.DOWN_RIGHT:
+			self.rect.x += OBJECT_SPEED
+			self.rect.y += OBJECT_SPEED
 
 class Star(BearObject):
 	def __init__(self):
@@ -165,6 +213,9 @@ def main():
 				bear_direction = BearDirection.LEFT
 			elif event.type == EV_BEAR_RIGHT:
 				bear_direction = BearDirection.RIGHT
+
+		for obj_object in objects:
+			obj_object.move()
 
 		move_bear(bear_direction, obj_bear)
 		draw_window(obj_bear, objects)
