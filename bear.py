@@ -46,6 +46,16 @@ def draw_window(obj_bear):
 
 	pygame.display.update()
 
+def handle_bear_movement(key_event, obj_bear):
+	if key_event == pygame.K_LEFT:
+		print("left")
+	elif key_event == pygame.K_RIGHT:
+		print("right")
+	elif key_event == pygame.K_UP:
+		print("up")
+	elif key_event == pygame.K_DOWN:
+		print("down")
+
 def main():
 	obj_bear = pygame.Rect((WIDTH // 2) - (OBJECT_WIDTH // 2),
 						   (HEIGHT // 2) - (OBJECT_HEIGHT // 2),
@@ -60,6 +70,9 @@ def main():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				run = False
+
+			if event.type == pygame.KEYDOWN:
+				handle_bear_movement(event.key, obj_bear)
 
 		draw_window(obj_bear)
 
