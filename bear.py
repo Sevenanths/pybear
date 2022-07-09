@@ -19,6 +19,8 @@ OBJECT_HEIGHT = 32
 
 BEAR_SPEED = 4
 
+NUM_OBJECTS = 2
+
 EV_BEAR_UP = pygame.USEREVENT + 1
 EV_BEAR_DOWN = pygame.USEREVENT + 2
 EV_BEAR_LEFT = pygame.USEREVENT + 3
@@ -31,6 +33,25 @@ class Direction:
 	DOWN = 2
 	LEFT = 3
 	RIGHT = 4
+
+ALL_DIRECTIONS = [ Direction.UP, Direction.DOWN,
+				   Direction.LEFT, Direction.RIGHT ]
+
+class BearObject:
+	def __init__(self, object_type):
+		self.type = object_type
+		self.direction = random.choice(ALL_DIRECTIONS)
+		self.rect = pygame.Rect(generate_random_coordinate("x"),
+								generate_random_coordinate("y"),
+								OBJECT_WIDTH, OBJECT_HEIGHT)
+
+class Star(BearObject):
+	def __init__(self):
+		super().__init__("star")
+		
+class Fire(BearObject):
+	def __init__(self):
+		super().__init__("fire")
 
 # -- Assets --
 SPR_BEAR = pygame.image.load(os.path.join('assets', 'bear.png'))
@@ -92,13 +113,30 @@ def move_bear(bear_direction, obj_bear):
 	elif bear_direction == Direction.DOWN:
 		obj_bear.y += BEAR_SPEED
 
+def generate_random_coordinate(axis):
+	if axis == "x":
+		return random.randrange(OBJECT_WIDTH + 1,
+								WIDTH - (2 * OBJECT_WIDTH))
+	elif axis == "y":
+		return random.randrange(OBJECT_HEIGHT + 1,
+								HEIGHT - (2 * OBJECT_HEIGHT))
+	else:
+		return False
+
 def main():
 	obj_bear = pygame.Rect((WIDTH // 2) - (OBJECT_WIDTH // 2),
 						   (HEIGHT // 2) - (OBJECT_HEIGHT // 2),
 						   OBJECT_WIDTH, OBJECT_HEIGHT)
 
-	bear_direction = random.choice([ Direction.UP, Direction.DOWN,
-									 Direction.LEFT, Direction.RIGHT ])
+	objects = []
+	for i in range(NUM_OBJECTS):
+		fire = Fire()
+		star = Star()
+
+		objects.append(fire)
+		objects.append(star)
+
+	bear_direction = random.choice(ALL_DIRECTIONS)
 
 	clock = pygame.time.Clock()
 	run = True
