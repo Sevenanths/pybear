@@ -75,6 +75,7 @@ def main():
 			obj_object.move()
 
 		obj_bear.move()
+		obj_bear.check_collision(objects)
 
 		draw_window(obj_bear, objects)
 

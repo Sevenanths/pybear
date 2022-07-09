@@ -40,3 +40,11 @@ class Bear:
 			self.rect.y -= BEAR_SPEED
 		elif self.direction == BearDirection.DOWN:
 			self.rect.y += BEAR_SPEED
+
+	def check_collision(self, objects):
+		for obj_object in objects:
+			if self.rect.colliderect(obj_object):
+				if obj_object.type == "fire":
+					print("Contact with fire")
+				elif obj_object.type == "star":
+					print("Contact with star")
