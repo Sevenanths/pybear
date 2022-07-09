@@ -7,11 +7,11 @@ from .object_direction import ALL_OBJECT_DIRECTIONS
 from .object_direction import ObjectDirection
 
 class BearObject:
-	def __init__(self, object_type):
+	def __init__(self, object_type, obj_bear):
 		self.type = object_type
 		self.direction = random.choice(ALL_OBJECT_DIRECTIONS)
-		self.rect = pygame.Rect(generate_random_coordinate("x"),
-								generate_random_coordinate("y"),
+		self.rect = pygame.Rect(generate_random_coordinate("x", obj_bear),
+								generate_random_coordinate("y", obj_bear),
 								OBJECT_WIDTH, OBJECT_HEIGHT)
 
 	def move(self):
@@ -52,12 +52,18 @@ class BearObject:
 			self.rect.x += OBJECT_SPEED
 			self.rect.y += OBJECT_SPEED
 
-def generate_random_coordinate(axis):
+def generate_random_coordinate(axis, obj_bear):
 	if axis == "x":
-		return random.randrange(OBJECT_WIDTH + 1,
-								WIDTH - (2 * OBJECT_WIDTH))
+		excluded_range = list(range(obj_bear.rect.x - BEAR_SAFETY_ZONE,
+							   		obj_bear.rect.x + BEAR_SAFETY_ZONE))
+		valid_range = [ i for i in range(OBJECT_WIDTH + 1, WIDTH - (2 * OBJECT_WIDTH) + 1)
+						if not i in excluded_range ]
 	elif axis == "y":
-		return random.randrange(OBJECT_HEIGHT + 1,
-								HEIGHT - (2 * OBJECT_HEIGHT))
+		excluded_range = list(range(obj_bear.rect.y - BEAR_SAFETY_ZONE,
+							  		obj_bear.rect.y + BEAR_SAFETY_ZONE))
+		valid_range = [ i for i in range(OBJECT_HEIGHT + 1, HEIGHT - (2 * OBJECT_HEIGHT) + 1)
+					    if not i in excluded_range]
 	else:
 		return False
+
+	return random.choice(valid_range)

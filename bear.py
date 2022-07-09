@@ -52,8 +52,8 @@ def main():
 
 	objects = []
 	for i in range(NUM_OBJECTS):
-		fire = Fire()
-		star = Star()
+		fire = Fire(obj_bear)
+		star = Star(obj_bear)
 
 		objects.append(fire)
 		objects.append(star)
@@ -78,10 +78,10 @@ def main():
 				
 				if touched_object.type == "star":
 					score += SCORE_INCREASE
-					new_object = Star()
+					new_object = Star(obj_bear)
 				elif touched_object.type == "fire":
 					score -= SCORE_INCREASE
-					new_object = Fire()
+					new_object = Fire(obj_bear)
 
 				objects.remove(touched_object)
 				objects.append(new_object)
