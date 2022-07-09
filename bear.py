@@ -36,8 +36,7 @@ class Direction:
 SPR_BEAR = pygame.image.load(os.path.join('assets', 'bear.png'))
 SPR_WALL = pygame.image.load(os.path.join('assets', 'wall.png'))
 
-BG = pygame.transform.scale(pygame.image.load(
-    os.path.join('assets', 'bg.jpg')), (WIDTH, HEIGHT))
+BG = pygame.image.load(os.path.join('assets', 'bg_scaled.png'))
 
 # -- Functions --
 def draw_window(obj_bear):
