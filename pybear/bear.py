@@ -44,7 +44,5 @@ class Bear:
 	def check_collision(self, objects):
 		for obj_object in objects:
 			if self.rect.colliderect(obj_object):
-				if obj_object.type == "fire":
-					print("Contact with fire")
-				elif obj_object.type == "star":
-					print("Contact with star")
+				pygame.event.post(pygame.event.Event(EV_OBJECT_TOUCH,
+													 { "touched_object": obj_object }))

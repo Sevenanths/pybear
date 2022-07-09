@@ -58,6 +58,8 @@ def main():
 		objects.append(fire)
 		objects.append(star)
 
+	score = 0
+
 	clock = pygame.time.Clock()
 	run = True
 
@@ -70,6 +72,19 @@ def main():
 
 			if event.type == pygame.KEYDOWN:
 				obj_bear.read_key(event.key)
+
+			if event.type == EV_OBJECT_TOUCH:
+				touched_object = event.dict["touched_object"]
+				
+				if touched_object.type == "star":
+					score += SCORE_INCREASE
+					new_object = Star()
+				elif touched_object.type == "fire":
+					score -= SCORE_INCREASE
+					new_object = Fire()
+
+				objects.remove(touched_object)
+				objects.append(new_object)
 
 		for obj_object in objects:
 			obj_object.move()
