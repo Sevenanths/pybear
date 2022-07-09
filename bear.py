@@ -140,7 +140,7 @@ def main():
 					show_text = not show_text
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
-						game_mode = GameModes.GAME
+						run = False
 						SND_BG.stop()
 				elif event.type == pygame.QUIT:
 					run = False
