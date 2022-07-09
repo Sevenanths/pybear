@@ -23,7 +23,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("pybear")
 
 # -- Functions --
-def draw_window(obj_bear, objects):
+def draw_window(obj_bear, objects, score):
 	WIN.blit(BG, (0, 0))
 
 	walls = []
@@ -44,6 +44,18 @@ def draw_window(obj_bear, objects):
 	for obj_object in objects:
 		spr_object = SPR_FIRE if obj_object.type == "fire" else SPR_STAR
 		WIN.blit(spr_object, (obj_object.rect.x, obj_object.rect.y))
+
+	score_text = FNT_ARIAL.render(str(score), 1, WHITE)
+	score_outline = FNT_ARIAL.render(str(score), 1, BLACK)
+
+	score_x = (WIDTH // 2) - (score_text.get_width() // 2)
+	score_y = 2
+
+	WIN.blit(score_outline, (score_x + 1, score_y + 1))
+	WIN.blit(score_outline, (score_x - 1, score_y + 1))
+	WIN.blit(score_outline, (score_x - 1, score_y - 1))
+	WIN.blit(score_outline, (score_x + 1, score_y - 1))
+	WIN.blit(score_text, (score_x, score_y))
 
 	pygame.display.update()
 
@@ -92,7 +104,7 @@ def main():
 		obj_bear.move()
 		obj_bear.check_collision(objects)
 
-		draw_window(obj_bear, objects)
+		draw_window(obj_bear, objects, score)
 
 	pygame.quit()
 
