@@ -18,6 +18,7 @@ from pybear.object_direction import ObjectDirection
 from pybear.fire import Fire
 from pybear.star import Star
 from pybear.bear import Bear
+from pybear.ai_export import *
 
 # -- Constants --
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -99,7 +100,11 @@ def draw_game_over(show_text, score):
 
 	pygame.display.update()
 
+ai_export = False
+
 def main():
+	global ai_export
+
 	obj_bear = Bear()
 
 	objects = []
@@ -117,8 +122,7 @@ def main():
 
 	game_mode = GameModes.TITLE
 	show_text = True
-
-	ai_export = False
+	feature_vectors = []
 
 	pygame.time.set_timer(EV_HIDE_TEXT, 1000)
 
@@ -172,6 +176,10 @@ def main():
 					elif touched_object.type == "fire":
 						show_text = True
 						game_mode = GameModes.GAME_OVER
+
+						if ai_export:
+							export_feature_vectors(feature_vectors)
+
 						new_object = Fire(obj_bear)
 		
 					objects.remove(touched_object)
@@ -186,6 +194,10 @@ def main():
 		
 			obj_bear.move()
 			obj_bear.check_collision(objects)
+
+			if ai_export:
+				feature_vector = get_feature_vector(obj_bear, objects)
+				feature_vectors.append(feature_vector)
 		
 			draw_window(obj_bear, objects, score)
 
