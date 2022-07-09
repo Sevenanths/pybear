@@ -28,6 +28,19 @@ BG = pygame.transform.scale(pygame.image.load(
 def draw_window():
 	WIN.blit(BG, (0, 0))
 
+	walls = []
+	for x in range(25):
+		# Top walls
+		WIN.blit(SPR_WALL, (x * OBJECT_WIDTH, 0))
+		# Bottom walls
+		WIN.blit(SPR_WALL, (x * OBJECT_WIDTH, HEIGHT - OBJECT_HEIGHT))
+
+	for y in range(1, 14):
+		# Left walls
+		WIN.blit(SPR_WALL, (0, y * OBJECT_HEIGHT))
+		# Right walls
+		WIN.blit(SPR_WALL, (WIDTH - OBJECT_WIDTH, y * OBJECT_HEIGHT))
+
 	pygame.display.update()
 
 def main():
