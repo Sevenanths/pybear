@@ -61,7 +61,7 @@ def draw_window(obj_bear, objects, score):
 
 	pygame.display.update()
 
-def draw_title(show_text):
+def draw_title(show_text, ai_export):
 	WIN.blit(BG, (0, 0))
 
 	WIN.blit(SPR_TITLE, (WIDTH // 2 - (SPR_TITLE.get_width() // 2),
@@ -72,6 +72,11 @@ def draw_title(show_text):
 		WIN.blit(press_start_text,
 				 (WIDTH // 2 - press_start_text.get_width() / 2,
 				 400))
+
+	if ai_export:
+		ai_text = FNT_SCORE.render("AI export enabled", 1, WHITE)
+		WIN.blit(SPR_TEN, (10, 10))
+		WIN.blit(ai_text, (48, 10))
 
 	pygame.display.update()
 
@@ -113,6 +118,8 @@ def main():
 	game_mode = GameModes.TITLE
 	show_text = True
 
+	ai_export = False
+
 	pygame.time.set_timer(EV_HIDE_TEXT, 1000)
 
 	while run:
@@ -127,12 +134,14 @@ def main():
 						game_mode = GameModes.GAME
 						SND_BG.play(-1)
 						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
+					elif event.key == pygame.K_a:
+						ai_export = True
 				elif event.type == pygame.QUIT:
 					run = False
 					pygame.quit()
 					return
 
-			draw_title(show_text)
+			draw_title(show_text, ai_export)
 	
 			continue
 		elif game_mode == GameModes.GAME_OVER:
