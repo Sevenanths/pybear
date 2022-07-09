@@ -127,6 +127,8 @@ def main():
 						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
 				elif event.type == pygame.QUIT:
 					run = False
+					pygame.quit()
+					return
 
 			draw_title(show_text)
 	
@@ -140,6 +142,8 @@ def main():
 						game_mode = GameModes.GAME
 				elif event.type == pygame.QUIT:
 					run = False
+					pygame.quit()
+					return
 
 			draw_game_over(show_text, score)
 	
@@ -154,6 +158,7 @@ def main():
 						score += SCORE_INCREASE
 						new_object = Star(obj_bear)
 					elif touched_object.type == "fire":
+						show_text = True
 						game_mode = GameModes.GAME_OVER
 						new_object = Fire(obj_bear)
 		
@@ -161,6 +166,8 @@ def main():
 					objects.append(new_object)
 				elif event.type == pygame.QUIT:
 					run = False
+					pygame.quit()
+					return
 		
 			for obj_object in objects:
 				obj_object.move()
@@ -170,7 +177,7 @@ def main():
 		
 			draw_window(obj_bear, objects, score)
 
-	pygame.quit()
+	main()
 
 if __name__ == "__main__":
 	main()
