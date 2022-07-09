@@ -12,6 +12,7 @@ pygame.mixer.init()
 from pybear.constants import *
 from pybear.assets import *
 
+from pybear.game_modes import GameModes
 from pybear.bear_direction import BearDirection, ALL_DIRECTIONS
 from pybear.object_direction import ObjectDirection
 from pybear.fire import Fire
@@ -45,8 +46,8 @@ def draw_window(obj_bear, objects, score):
 		spr_object = SPR_FIRE if obj_object.type == "fire" else SPR_STAR
 		WIN.blit(spr_object, (obj_object.rect.x, obj_object.rect.y))
 
-	score_text = FNT_ARIAL.render(str(score), 1, WHITE)
-	score_outline = FNT_ARIAL.render(str(score), 1, BLACK)
+	score_text = FNT_SCORE.render(str(score), 1, WHITE)
+	score_outline = FNT_SCORE.render(str(score), 1, BLACK)
 
 	score_x = (WIDTH // 2) - (score_text.get_width() // 2)
 	score_y = 2
@@ -56,6 +57,33 @@ def draw_window(obj_bear, objects, score):
 	WIN.blit(score_outline, (score_x - 1, score_y - 1))
 	WIN.blit(score_outline, (score_x + 1, score_y - 1))
 	WIN.blit(score_text, (score_x, score_y))
+
+	pygame.display.update()
+
+def draw_title(show_text):
+	WIN.blit(BG, (0, 0))
+
+	WIN.blit(SPR_TITLE, (WIDTH // 2 - (SPR_TITLE.get_width() // 2),
+						 HEIGHT // 2 - SPR_TITLE.get_height() // 2 - 20))
+
+	if show_text:
+		press_start_text = FNT_TITLE.render("Press ENTER to start", 1, WHITE)
+		WIN.blit(press_start_text,
+				 (WIDTH // 2 - press_start_text.get_width() / 2,
+				 400))
+
+	pygame.display.update()
+
+def draw_game_over(score):
+	WIN.blit(BG, (0, 0))
+
+	WIN.blit(SPR_GAME_OVER, (WIDTH // 2 - (SPR_GAME_OVER.get_width() // 2),
+						 	 HEIGHT // 2 - SPR_GAME_OVER.get_height() // 2 - 20))
+
+	final_score_text = FNT_TITLE.render(f"Score: {score}", 1, WHITE)
+	WIN.blit(final_score_text,
+			 (WIDTH // 2 - final_score_text.get_width() / 2,
+			 400))
 
 	pygame.display.update()
 
@@ -75,36 +103,64 @@ def main():
 	clock = pygame.time.Clock()
 	run = True
 
+	game_mode = GameModes.TITLE
+	show_text = True
+
+	pygame.time.set_timer(EV_HIDE_TEXT, 1000)
+
 	while run:
 		clock.tick(FPS)
 
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				run = False
+		if game_mode == GameModes.TITLE:
+			for event in pygame.event.get():
+				if event.type == EV_HIDE_TEXT:
+					show_text = not show_text
+				elif event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_RETURN:
+						game_mode = GameModes.GAME
+						pygame.time.set_timer(EV_HIDE_TEXT, 0)
+				elif event.type == pygame.QUIT:
+					run = False
 
-			if event.type == pygame.KEYDOWN:
-				obj_bear.read_key(event.key)
+			draw_title(show_text)
+	
+			continue
+		elif game_mode == GameModes.GAME_OVER:
+			draw_game_over(score)
 
-			if event.type == EV_OBJECT_TOUCH:
-				touched_object = event.dict["touched_object"]
+			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_RETURN:
+						game_mode = GameModes.GAME
+				elif event.type == pygame.QUIT:
+					run = False
+	
+		elif game_mode == GameModes.GAME:
+			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					obj_bear.read_key(event.key)
+				elif event.type == EV_OBJECT_TOUCH:
+					touched_object = event.dict["touched_object"]
 				
-				if touched_object.type == "star":
-					score += SCORE_INCREASE
-					new_object = Star(obj_bear)
-				elif touched_object.type == "fire":
-					score -= SCORE_INCREASE
-					new_object = Fire(obj_bear)
-
-				objects.remove(touched_object)
-				objects.append(new_object)
-
-		for obj_object in objects:
-			obj_object.move()
-
-		obj_bear.move()
-		obj_bear.check_collision(objects)
-
-		draw_window(obj_bear, objects, score)
+					if touched_object.type == "star":
+						score += SCORE_INCREASE
+						new_object = Star(obj_bear)
+					elif touched_object.type == "fire":
+						game_mode = GameModes.GAME_OVER
+						new_object = Fire(obj_bear)
+		
+					objects.remove(touched_object)
+					objects.append(new_object)
+				elif event.type == pygame.QUIT:
+					run = False
+		
+			for obj_object in objects:
+				obj_object.move()
+		
+			obj_bear.move()
+			obj_bear.check_collision(objects)
+		
+			draw_window(obj_bear, objects, score)
 
 	pygame.quit()
 
