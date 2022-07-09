@@ -5,6 +5,7 @@
 # -- Imports --
 import pygame
 import os
+import random
 pygame.font.init()
 pygame.mixer.init()
 
@@ -16,7 +17,20 @@ pygame.display.set_caption("pybear")
 OBJECT_WIDTH = 32
 OBJECT_HEIGHT = 32
 
-FPS = 60
+BEAR_SPEED = 4
+
+EV_BEAR_UP = pygame.USEREVENT + 1
+EV_BEAR_DOWN = pygame.USEREVENT + 2
+EV_BEAR_LEFT = pygame.USEREVENT + 3
+EV_BEAR_RIGHT = pygame.USEREVENT + 4
+
+FPS = 75
+
+class Direction:
+	UP = 1
+	DOWN = 2
+	LEFT = 3
+	RIGHT = 4
 
 # -- Assets --
 SPR_BEAR = pygame.image.load(os.path.join('assets', 'bear.png'))
@@ -48,18 +62,31 @@ def draw_window(obj_bear):
 
 def handle_bear_movement(key_event, obj_bear):
 	if key_event == pygame.K_LEFT:
-		print("left")
+		pygame.event.post(pygame.event.Event(EV_BEAR_LEFT))
 	elif key_event == pygame.K_RIGHT:
-		print("right")
+		pygame.event.post(pygame.event.Event(EV_BEAR_RIGHT))
 	elif key_event == pygame.K_UP:
-		print("up")
+		pygame.event.post(pygame.event.Event(EV_BEAR_UP))
 	elif key_event == pygame.K_DOWN:
-		print("down")
+		pygame.event.post(pygame.event.Event(EV_BEAR_DOWN))
+
+def move_bear(bear_direction, obj_bear):
+	if bear_direction == Direction.LEFT:
+		obj_bear.x -= BEAR_SPEED
+	elif bear_direction == Direction.RIGHT:
+		obj_bear.x += BEAR_SPEED
+	elif bear_direction == Direction.UP:
+		obj_bear.y -= BEAR_SPEED
+	elif bear_direction == Direction.DOWN:
+		obj_bear.y += BEAR_SPEED
 
 def main():
 	obj_bear = pygame.Rect((WIDTH // 2) - (OBJECT_WIDTH // 2),
 						   (HEIGHT // 2) - (OBJECT_HEIGHT // 2),
 						   OBJECT_WIDTH, OBJECT_HEIGHT)
+
+	bear_direction = random.choice([ Direction.UP, Direction.DOWN,
+									 Direction.LEFT, Direction.RIGHT ])
 
 	clock = pygame.time.Clock()
 	run = True
@@ -74,6 +101,16 @@ def main():
 			if event.type == pygame.KEYDOWN:
 				handle_bear_movement(event.key, obj_bear)
 
+			if event.type == EV_BEAR_UP:
+				bear_direction = Direction.UP
+			elif event.type == EV_BEAR_DOWN:
+				bear_direction = Direction.DOWN
+			elif event.type == EV_BEAR_LEFT:
+				bear_direction = Direction.LEFT
+			elif event.type == EV_BEAR_RIGHT:
+				bear_direction = Direction.RIGHT
+
+		move_bear(bear_direction, obj_bear)
 		draw_window(obj_bear)
 
 	pygame.quit()
