@@ -19,13 +19,14 @@ OBJECT_HEIGHT = 32
 FPS = 60
 
 # -- Assets --
+SPR_BEAR = pygame.image.load(os.path.join('assets', 'bear.png'))
 SPR_WALL = pygame.image.load(os.path.join('assets', 'wall.png'))
 
 BG = pygame.transform.scale(pygame.image.load(
     os.path.join('assets', 'bg.jpg')), (WIDTH, HEIGHT))
 
 # -- Functions --
-def draw_window():
+def draw_window(obj_bear):
 	WIN.blit(BG, (0, 0))
 
 	walls = []
@@ -41,9 +42,14 @@ def draw_window():
 		# Right walls
 		WIN.blit(SPR_WALL, (WIDTH - OBJECT_WIDTH, y * OBJECT_HEIGHT))
 
+	WIN.blit(SPR_BEAR, (obj_bear.x, obj_bear.y))
+
 	pygame.display.update()
 
 def main():
+	obj_bear = pygame.Rect((WIDTH // 2) - (OBJECT_WIDTH // 2),
+						   (HEIGHT // 2) - (OBJECT_HEIGHT // 2),
+						   OBJECT_WIDTH, OBJECT_HEIGHT)
 
 	clock = pygame.time.Clock()
 	run = True
@@ -55,7 +61,7 @@ def main():
 			if event.type == pygame.QUIT:
 				run = False
 
-		draw_window()
+		draw_window(obj_bear)
 
 	pygame.quit()
 
