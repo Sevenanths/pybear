@@ -70,6 +70,19 @@ def handle_bear_movement(key_event, obj_bear):
 		pygame.event.post(pygame.event.Event(EV_BEAR_DOWN))
 
 def move_bear(bear_direction, obj_bear):
+	if obj_bear.x - BEAR_SPEED <= OBJECT_WIDTH:
+		bear_direction = Direction.RIGHT
+		pygame.event.post(pygame.event.Event(EV_BEAR_RIGHT))
+	elif obj_bear.x + BEAR_SPEED >= WIDTH - (OBJECT_WIDTH * 2):
+		bear_direction = Direction.LEFT
+		pygame.event.post(pygame.event.Event(EV_BEAR_LEFT))
+	elif obj_bear.y - BEAR_SPEED <= OBJECT_HEIGHT:
+		bear_direction = Direction.DOWN
+		pygame.event.post(pygame.event.Event(EV_BEAR_DOWN))
+	elif obj_bear.y + BEAR_SPEED >= HEIGHT - (OBJECT_HEIGHT * 2):
+		bear_direction = Direction.UP
+		pygame.event.post(pygame.event.Event(EV_BEAR_UP))
+
 	if bear_direction == Direction.LEFT:
 		obj_bear.x -= BEAR_SPEED
 	elif bear_direction == Direction.RIGHT:
