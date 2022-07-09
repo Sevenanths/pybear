@@ -22,6 +22,7 @@ from pybear.bear import Bear
 # -- Constants --
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("pybear by Anthe (2008-2022)")
+pygame.display.set_icon(SPR_BEAR)
 
 # -- Functions --
 def draw_window(obj_bear, objects, score):
