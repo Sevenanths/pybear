@@ -102,6 +102,8 @@ def draw_game_over(show_text, score):
 
 ai_export = False
 
+SND_BG.play(-1)
+
 def main():
 	global ai_export
 
@@ -136,7 +138,6 @@ def main():
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						game_mode = GameModes.GAME
-						SND_BG.play(-1)
 						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
 					elif event.key == pygame.K_a:
 						ai_export = True
@@ -155,7 +156,6 @@ def main():
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_RETURN:
 						run = False
-						SND_BG.stop()
 				elif event.type == pygame.QUIT:
 					run = False
 					pygame.quit()
