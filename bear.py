@@ -62,7 +62,7 @@ def draw_window(obj_bear, objects, score):
 
 	pygame.display.update()
 
-def draw_title(show_text, ai_export):
+def draw_title(show_text, ai_export, ai_control):
 	WIN.blit(BG, (0, 0))
 
 	WIN.blit(SPR_TITLE, (WIDTH // 2 - (SPR_TITLE.get_width() // 2),
@@ -78,6 +78,11 @@ def draw_title(show_text, ai_export):
 		ai_text = FNT_SCORE.render("AI export enabled", 1, WHITE)
 		WIN.blit(SPR_TEN, (10, 10))
 		WIN.blit(ai_text, (48, 10))
+
+	if ai_control:
+		ai_text = FNT_SCORE.render("AI control enabled", 1, WHITE)
+		WIN.blit(SPR_TEN, (10, 38))
+		WIN.blit(ai_text, (48, 38))
 
 	pygame.display.update()
 
@@ -101,11 +106,13 @@ def draw_game_over(show_text, score):
 	pygame.display.update()
 
 ai_export = False
+ai_control = False
 
 SND_BG.play(-1)
 
 def main():
 	global ai_export
+	global ai_control
 
 	obj_bear = Bear()
 
@@ -141,12 +148,14 @@ def main():
 						#pygame.time.set_timer(EV_HIDE_TEXT, 0)
 					elif event.key == pygame.K_a:
 						ai_export = True
+					elif event.key == pygame.K_TAB:
+						ai_control = not ai_control
 				elif event.type == pygame.QUIT:
 					run = False
 					pygame.quit()
 					return
 
-			draw_title(show_text, ai_export)
+			draw_title(show_text, ai_export, ai_control)
 	
 			continue
 		elif game_mode == GameModes.GAME_OVER:
