@@ -20,3 +20,5 @@ FPS = 120
 
 WHITE = (255, 255, 255)
 BLACK = (35, 35, 35)
+
+N_FEATURES = 16

@@ -20,13 +20,16 @@ from pybear.star import Star
 from pybear.bear import Bear
 from pybear.ai_export import *
 
+from ai_bear.model import Model
+from ai_bear.predict_direction import predict_direction
+
 # -- Constants --
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("pybear by Anthe (2008-2022)")
 pygame.display.set_icon(SPR_BEAR)
 
 # -- Functions --
-def draw_window(obj_bear, objects, score):
+def draw_window(obj_bear, objects, score, ai_control):
 	WIN.blit(BG, (0, 0))
 
 	walls = []
@@ -42,7 +45,9 @@ def draw_window(obj_bear, objects, score):
 		# Right walls
 		WIN.blit(SPR_WALL, (WIDTH - OBJECT_WIDTH, y * OBJECT_HEIGHT))
 
-	WIN.blit(SPR_BEAR, (obj_bear.rect.x, obj_bear.rect.y))
+	bear_sprite = SPR_BEAR if not ai_control else SPR_AI_BEAR
+
+	WIN.blit(bear_sprite, (obj_bear.rect.x, obj_bear.rect.y))
 
 	for obj_object in objects:
 		spr_object = SPR_FIRE if obj_object.type == "fire" else SPR_STAR
@@ -108,11 +113,16 @@ def draw_game_over(show_text, score):
 ai_export = False
 ai_control = False
 
+model = Model(N_FEATURES)
+model.load_state_dict(BEAR_MODEL)
+model.eval()
+
 SND_BG.play(-1)
 
 def main():
 	global ai_export
 	global ai_control
+	ai_control_OK = False
 
 	obj_bear = Bear()
 
@@ -175,7 +185,8 @@ def main():
 		elif game_mode == GameModes.GAME:
 			for event in pygame.event.get():
 				if event.type == pygame.KEYDOWN:
-					obj_bear.read_key(event.key)
+					if not ai_control:
+						obj_bear.read_key(event.key)
 				elif event.type == EV_OBJECT_TOUCH:
 					touched_object = event.dict["touched_object"]
 				
@@ -204,11 +215,21 @@ def main():
 			obj_bear.move()
 			obj_bear.check_collision(objects)
 
-			if ai_export:
+			if ai_export or ai_control:
 				feature_vector = get_feature_vector(obj_bear, objects)
 				feature_vectors.append(feature_vector)
+
+			if ai_control_OK:
+				obj_bear.direction = predict_direction(model, feature_vectors)
+
+			# Prune feature vectors if they need not be saved
+			if not ai_export and ai_control:
+				feature_vectors = feature_vectors[-2:]
+
+			# AI control can only be enabled after two input frames
+			ai_control_OK = True
 		
-			draw_window(obj_bear, objects, score)
+			draw_window(obj_bear, objects, score, ai_control)
 
 	main()
 
